@@ -1,0 +1,128 @@
+
+
+@font-face { font-family: 'Suissnord';
+             src: url('Suissnord.otf') format('truetype'); }
+
+* {
+	font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+	color: gray;
+	font-weight: 100;
+	font-size: 13px;
+	line-height: 20px;
+}
+
+h1 {
+	font-family:"Suissnord";
+	font-size: 48px;
+	padding: 0;
+	text-align: center;
+}
+
+h2 {
+	color: #37474F;
+	font-size: 28px;
+	font-weight: 500;
+	line-height: 32px;
+	margin-top: 10px;
+	margin: 0 0 16px 0;
+	opacity: .87;
+}
+
+h3 {
+	color: #37474F;
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 16px;
+	margin-top: 5px;
+	margin: 0 0 16px 0;
+	opacity: .87;
+}
+
+body>header {
+	background: url("../img/material.png");
+	border-radius: 0px;
+	font-size: 32px;
+}
+
+nav a {
+	color: white;
+	text-decoration: none;
+	text-transform: uppercase;
+	margin-right:20px;
+}
+
+body>header>a:hover, h1.title {
+	color: white;
+}
+
+fieldset, header, nav {
+	padding: 9px;
+	margin: 20px;
+}
+
+.info {
+	padding: 15px;
+	margin-bottom: 20px;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	color: #31708f;
+	background-color: #d9edf7;
+	border-color: #bce8f1;
+}
+
+.error {
+	padding: 15px;
+	margin-bottom: 20px;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	color: #a94442;
+	background-color: #f2dede;
+	border-color: #ebccd1;
+}
+
+.soldout{
+	background: url("../img/SoldOut.png");
+	opacity: .57;
+	background-repeat: no-repeat;
+	background-position: right top;
+	
+}
+
+.button, input[type=submit], input[type=reset]{
+	-moz-transition: color 0.35s ease-in-out, background-color 0.35s
+		ease-in-out;
+	-webkit-transition: color 0.35s ease-in-out, background-color 0.35s
+		ease-in-out;
+	-o-transition: color 0.35s ease-in-out, background-color 0.35s
+		ease-in-out;
+	-ms-transition: color 0.35s ease-in-out, background-color 0.35s
+		ease-in-out;
+	transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out;
+	position: relative;
+	display: inline-block;
+	padding-left: 29.3333px;
+	padding-right: 29.3333px;
+	color: rgb(86, 86, 86);
+	text-decoration: none !important;
+	font-size: 0.75em;
+	font-weight: 400;
+	text-align: center;
+	text-transform: uppercase;
+	letter-spacing: 0.2em;
+	white-space: nowrap;
+	background-color: rgba(86, 86, 86, 0.0470588);
+	border-radius: 44px;
+	border-color: rgb(86, 86, 86);
+	border-width: 1px;
+	line-height: 44px;
+	height: 43.9844px;
+	margin-bottom: 14px;
+	margin-top: 14px;
+	
+}
+
+.button:hover, input[type=submit]:hover, input[type=reset]:hover{
+	background: rgba(86, 86, 86, 0.0745098);
+	color: rgb(86, 86, 86);
+	font-weight: 500;
+}
