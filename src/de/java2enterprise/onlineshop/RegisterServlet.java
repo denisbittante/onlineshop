@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+import de.java2enterprise.onlineshop.model.Customer;
+
 
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {

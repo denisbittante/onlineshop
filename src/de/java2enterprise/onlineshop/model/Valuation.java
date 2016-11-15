@@ -1,4 +1,4 @@
-package de.java2enterprise.onlineshop;
+package de.java2enterprise.onlineshop.model;
 
 import java.io.Serializable;
 import java.util.Date;

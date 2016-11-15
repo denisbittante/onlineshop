@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
+import de.java2enterprise.onlineshop.model.Customer;
+
 
 @WebServlet("/buy")
 public class BuyServlet extends HttpServlet {

@@ -25,6 +25,9 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import javax.sql.DataSource;
 
+import de.java2enterprise.onlineshop.model.Customer;
+import de.java2enterprise.onlineshop.model.Item;
+
 
 @WebServlet("/sell")
 @MultipartConfig(

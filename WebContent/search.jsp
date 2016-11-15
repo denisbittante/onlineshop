@@ -32,7 +32,7 @@
 			<article class="soldout">
 		</c:otherwise>
 	</c:choose>
-	<section>
+	<section id=${item.id}>
 		<form action="buy" method="post">
 			<fieldset>
 				<legend>ID: ${item.id}</legend>
@@ -89,10 +89,11 @@
 
 					<textarea cols="10" id="comment" maxlength="1000" name="comment"
 						rows="5" style="width: 80%;"></textarea>
-
 					<br> <a class="submit_review button" id="${item.id}">Review
 						abgeben</a>
 				</div>
+				<a class="reviews-button" id=${item.id} >Bewertungen</a>
+				<div id="bewertungen${item.id}" style="display: none;"></div>
 
 			</aside>
 
@@ -144,10 +145,9 @@
 							console.log('comment_:' + comment);
 							var dataRate = 'product_id=' + product_id
 									+ '&rate=' + rate + '&comment=' + comment; //
-							$
-									.ajax({
+							$.ajax({
 										type : "POST",
-										url : "http://localhost:8080/onlineshop-war/review",
+										url : "http://localhost:8081/onlineshop-war/review",
 										data : dataRate,
 										success : function() {
 											$('#review' + product_id).hide()
@@ -165,6 +165,32 @@
 						});
 
 	});
+
+	$(document).ready(function() {
+		$(".reviews-button").click(function() {
+			var product_id = $(this).attr('id');
+	    	  $("#bewertungen"+ product_id).empty();
+
+				var flickerAPI =  "http://localhost:8081/onlineshop-war/comments?productId="+product_id;
+					  $.getJSON( flickerAPI, function() {
+						  console.log( "success" );
+						 
+					  } )
+					    .done(function( data ) {
+					      $.each( data.items, function( i, item ) {
+					        $( "<p>" ).text( item.comment).appendTo( "#bewertungen"+ product_id);
+					        console.log(item);
+					      });
+					    });
+				$("#bewertungen"+ product_id).toggle("fast", function() {});
+			});
+		});
+	
+	
+
+
+	
+
 </script>
 
 
