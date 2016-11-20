@@ -15,47 +15,45 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 import de.java2enterprise.onlineshop.converter.ValuationToJsonConverter;
+import de.java2enterprise.onlineshop.model.Customer;
 import de.java2enterprise.onlineshop.model.Valuation;
 
-@WebServlet(value = "/comments")
-public class CommentServlet extends HttpServlet {
-
-	private static final long serialVersionUID = 5361978195631685305L;
-
-	/**
-	 * Liefert die Kommentare zu einem Produkt zurück.
-	 * 
-	 * @throws Exception
-	 */
+@WebServlet(value = "/polling")
+public class PollingServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		Long productId = Long.valueOf(req.getParameter("productId").toString());
-		List<Valuation> find;
+		HttpSession session = req.getSession();
+		Customer customer = (Customer) session.getAttribute("customer");
+		String productids = req.getAttribute("productids").toString();
+		Long id = Long.valueOf(req.getAttribute("lastId").toString());
+
 		try {
-			find = find(productId);
-
-			String gson = ValuationToJsonConverter.convert(find);
-			log(gson);
-
+			List<Valuation> valList = find(productids, customer.getId(), id);
+			String gson = ValuationToJsonConverter.convert(valList);
 			resp.getWriter().write(gson);
 
 		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
-	public List<Valuation> find(Long productId) throws Exception {
+	public List<Valuation> find(String productids, Long userId, Long id) throws Exception {
 		Connection con = ((DataSource) InitialContext.doLookup("jdbc/jndiOnlineshop")).getConnection();
 		PreparedStatement stmt = con.prepareStatement(
-				"select id, time_submitted, stars, product_id, user_id, valuationcomment from  onlineshop.valuation where product_id =? and valuationcomment is not null and stars >  0");
+				"select id, time_submitted, stars, product_id, user_id, valuationcomment from  onlineshop.valuation where "
+						+ "product_id in (?) " + "and valuationcomment is not null " + "and stars >  0 "
+						+ "and user_id != ? " + "and id > ?  ");
 
-		stmt.setLong(1, productId);
+		stmt.setString(1, productids);
+		stmt.setLong(1, userId);
+		stmt.setString(1, productids);
 		ResultSet rs = stmt.executeQuery();
 
 		List<Valuation> items = new ArrayList<Valuation>();

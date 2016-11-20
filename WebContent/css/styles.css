@@ -1,7 +1,7 @@
-
-
-@font-face { font-family: 'Suissnord';
-             src: url('Suissnord.otf') format('truetype'); }
+@font-face {
+	font-family: 'Suissnord';
+	src: url('Suissnord.otf') format('truetype');
+}
 
 * {
 	font-family: "Roboto", "Helvetica", "Arial", sans-serif;
@@ -9,10 +9,13 @@
 	font-weight: 100;
 	font-size: 13px;
 	line-height: 20px;
+	margin: 0;
 }
-
+body{
+	 position: relative;
+}
 h1 {
-	font-family:"Suissnord";
+	font-family: "Suissnord";
 	font-size: 48px;
 	padding: 0;
 	text-align: center;
@@ -48,7 +51,7 @@ nav a {
 	color: white;
 	text-decoration: none;
 	text-transform: uppercase;
-	margin-right:20px;
+	margin-right: 20px;
 }
 
 body>header>a:hover, h1.title {
@@ -80,15 +83,14 @@ fieldset, header, nav {
 	border-color: #ebccd1;
 }
 
-.soldout{
+.soldout {
 	background: url("../img/SoldOut.png");
 	opacity: .57;
 	background-repeat: no-repeat;
 	background-position: right top;
-	
 }
 
-.button, input[type=submit], input[type=reset]{
+.button, input[type=submit], input[type=reset] {
 	-moz-transition: color 0.35s ease-in-out, background-color 0.35s
 		ease-in-out;
 	-webkit-transition: color 0.35s ease-in-out, background-color 0.35s
@@ -118,11 +120,18 @@ fieldset, header, nav {
 	height: 43.9844px;
 	margin-bottom: 14px;
 	margin-top: 14px;
-	
 }
 
-.button:hover, input[type=submit]:hover, input[type=reset]:hover{
+.button:hover, input[type=submit]:hover, input[type=reset]:hover {
 	background: rgba(86, 86, 86, 0.0745098);
 	color: rgb(86, 86, 86);
 	font-weight: 500;
+}
+
+#info {
+	position: absolute;
+	bottom: 0;
+	width: 100px;
+	height: 50px;
+	background-color: red;
 }

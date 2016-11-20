@@ -104,6 +104,9 @@
 	</article>
 </c:forEach>
 
+<div id="info"></div>
+
+
 
 <script>
 	// rating script
@@ -167,6 +170,7 @@
 	});
 
 	$(document).ready(function() {
+		
 		$(".reviews-button").click(function() {
 			var product_id = $(this).attr('id');
 	    	  $("#bewertungen"+ product_id).empty();
@@ -182,12 +186,32 @@
 					        console.log(item);
 					      });
 					    });
-				$("#bewertungen"+ product_id).toggle("fast", function() {});
+				$("#bewertungen"+ product_id).toggle("fast");
 			});
+		
+		doPoll();
+	});
+	
+	
+	function doPoll(){
+		
+		var prodids = '' ;
+		$('section').each(function(i, obj) {
+			console.log(obj);
+			var prodid = $(obj).attr('id');
+			
+			if (prodid ){
+					prodids = prodids + "," + prodid;
+			}
+			
+			
 		});
-	
-	
-
+			
+		console.log(prodids);
+		
+	       // alert("Helllo ");  // process results here
+	        setTimeout(doPoll,5000);
+	}
 
 	
 
