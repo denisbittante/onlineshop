@@ -1,7 +1,5 @@
 <%@ include file="head.jspf"%>
 
-
-
 <article>
 	<section>
 		<form action="search" method="post">
@@ -65,7 +63,7 @@
 
 				<aside>
 					<p>
-						<img width="100px" src="foto?id=${item.id}">
+						<img width="200px" src="foto?id=${item.id}">
 				</aside>
 		</form>
 		<c:if test="${not empty customer}">
@@ -93,7 +91,10 @@
 						abgeben</a>
 				</div>
 				<a class="reviews-button" id=${item.id} >Bewertungen</a>
-				<div id="bewertungen${item.id}" style="display: none;"></div>
+				<table id="bewertungen${item.id}" style="display: none;">
+				 <tbody>
+				 </tbody>
+				</table>
 
 			</aside>
 
@@ -103,9 +104,6 @@
 	</section>
 	</article>
 </c:forEach>
-
-<div id="info"></div>
-
 
 
 <script>
@@ -182,8 +180,27 @@
 					  } )
 					    .done(function( data ) {
 					      $.each( data.items, function( i, item ) {
-					        $( "<p>" ).text( item.comment).appendTo( "#bewertungen"+ product_id);
-					        console.log(item);
+   	  
+					    	  var tr = '<tr>' ;
+					    	   tr += '<td><img width="50px" src="../onlineshop-war/img/user.png"/></td>';
+					    	   
+					    	   
+					    	   var star = '<div class="rate-result-cnt">';
+					    	   star += '<div class="rate-bg"';
+					    	   star += 'style="width:'+ 20 * item.stars + '%"></div>';
+					    	   star += '<div class="rate-stars"></div>';
+					    	   star += '</div>';
+					    	   
+					    	   tr += '<td>' + star +'<p>' + item.comment  +'</p></td>';
+					    	   tr += '</tr><tr>';
+					    	   tr += '<td></td>';
+					    	   tr += '<td>' + item.time + " - " + item.userId  + '</td>';
+					    	   tr += '</tr>';
+	      
+					    	
+					    	   
+					      		$( "#bewertungen"+ product_id ).append( tr);
+				console.log(tr);
 					      });
 					    });
 				$("#bewertungen"+ product_id).toggle("fast");
@@ -191,6 +208,10 @@
 		
 		doPoll();
 	});
+	
+	
+	
+	
 	
 	
 	function doPoll(){

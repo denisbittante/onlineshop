@@ -1,5 +1,7 @@
 package de.java2enterprise.onlineshop.converter;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import de.java2enterprise.onlineshop.model.Valuation;
@@ -22,8 +24,14 @@ public class ValuationToJsonConverter {
 			buffer.append(jsonLabel("stars"));
 			buffer.append(valuation.getStars());
 			buffer.append(",\n");
+			
+			
+			Date timeSubmitted = valuation.getTimeSubmitted();
+			SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-mm-dd");
+			String formatedTime = dt1.format(timeSubmitted);
+			
 			buffer.append(jsonLabel("time"));
-			buffer.append("\"" + valuation.getTimeSubmitted() + "\"");
+			buffer.append("\"" + formatedTime + "\"");
 			buffer.append(",\n");
 			buffer.append(jsonLabel("comment"));
 			buffer.append("\"" + valuation.getValuationcomment() + "\"");
