@@ -27,7 +27,7 @@ public class ValuationToJsonConverter {
 			
 			
 			Date timeSubmitted = valuation.getTimeSubmitted();
-			SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-mm-dd");
+			SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
 			String formatedTime = dt1.format(timeSubmitted);
 			
 			buffer.append(jsonLabel("time"));
@@ -36,8 +36,8 @@ public class ValuationToJsonConverter {
 			buffer.append(jsonLabel("comment"));
 			buffer.append("\"" + valuation.getValuationcomment() + "\"");
 			buffer.append(",\n");
-			buffer.append(jsonLabel("userId"));
-			buffer.append(valuation.getUserId());
+			buffer.append(jsonLabel("userName"));
+			buffer.append("\"" +valuation.getUserEmail() + "\"");
 
 			buffer.append(valList.size() == i + 1 ? "}" : "},");
 		}
