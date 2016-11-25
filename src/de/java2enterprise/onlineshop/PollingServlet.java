@@ -25,35 +25,40 @@ import de.java2enterprise.onlineshop.model.Valuation;
 @WebServlet(value = "/polling")
 public class PollingServlet extends HttpServlet {
 
+	private static final long serialVersionUID = -5821318489914771264L;
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		HttpSession session = req.getSession();
-		Customer customer = (Customer) session.getAttribute("customer");
-		String productids = req.getAttribute("productids").toString();
-		Long id = Long.valueOf(req.getAttribute("lastId").toString());
-
 		try {
-			List<Valuation> valList = find(productids, customer.getId(), id);
-			String gson = ValuationToJsonConverter.convert(valList);
-			resp.getWriter().write(gson);
+			HttpSession session = req.getSession();
 
+			Customer customer = (Customer) session.getAttribute("customer");
+			String productids = req.getParameter("productids").toString();
+			productids = productids.substring(0, productids.length() - 1);
+			Long id = Long.valueOf(req.getParameter("lastId").toString());
+			if (customer != null) {
+				List<Valuation> valList = find(productids, customer.getId(), id);
+				String gson = ValuationToJsonConverter.convert(valList);
+				resp.getWriter().write(gson);
+			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(e);
+			resp.getWriter().write("{ \"items\": [ ]}");
+
 		}
 	}
 
 	public List<Valuation> find(String productids, Long userId, Long id) throws Exception {
 		Connection con = ((DataSource) InitialContext.doLookup("jdbc/jndiOnlineshop")).getConnection();
 		PreparedStatement stmt = con.prepareStatement(
-				"select id, time_submitted, stars, product_id, user_id, valuationcomment from  onlineshop.valuation where "
-						+ "product_id in (?) " + "and valuationcomment is not null " + "and stars >  0 "
-						+ "and user_id != ? " + "and id > ?  ");
+				"select val.*, (cust.email) as email from  onlineshop.valuation val join onlineshop.customer cust on val.user_id = cust.id where "
+						+ "val.product_id in (" + productids + ") " + "and (length(val.valuationcomment)>0 or val.stars >0) "
+						+ "and val.user_id != ? " + " and val.id > ?  order by val.TIME_SUBMITTED");
 
-		stmt.setString(1, productids);
 		stmt.setLong(1, userId);
-		stmt.setString(1, productids);
+		stmt.setLong(2, id);
+
 		ResultSet rs = stmt.executeQuery();
 
 		List<Valuation> items = new ArrayList<Valuation>();
@@ -77,6 +82,8 @@ public class PollingServlet extends HttpServlet {
 				item.setValuationcomment(comment);
 			}
 			item.setProductId(Long.valueOf(rs.getLong("product_id")));
+
+			item.setUserEmail(rs.getString("email"));
 
 			item.setUserId(Long.valueOf(rs.getLong("user_id")));
 

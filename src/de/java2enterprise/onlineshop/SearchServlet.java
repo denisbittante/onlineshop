@@ -69,7 +69,7 @@ public class SearchServlet extends HttpServlet {
 			item.setTitle(title);
 
 			String description = rs.getString("description");
-			item.setDescription(description);
+			item.setDescription(description.replaceAll("\n", "<br>"));
 			
 			Integer count = rs.getInt("cnt");
 			item.setCntReview(count);

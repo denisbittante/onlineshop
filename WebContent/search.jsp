@@ -21,6 +21,10 @@
 		</form>
 	</section>
 </article>
+
+<p hidden="true" id ="loadedProducts">
+<c:forEach var="item" items="${items}">${item.id},</c:forEach>
+</p>
 <c:forEach var="item" items="${items}">
 	<c:choose>
 		<c:when test="${empty item.sold}">
@@ -53,12 +57,14 @@
 						</c:otherwise>
 					</c:choose>
 				</c:if>
+				<b>Gesamtbewertung</b>
+				
 				<div class="rate-result-cnt">
 					<div class="rate-bg"
-						style="width:<c:out value=" ${20 * item.avgStar}"/>%"></div>
+						style="width:<c:out value=" ${20 * item.avgStar}"/>%"> </div> 
 					<div class="rate-stars"></div>
-				</div>
-				${item.cntReview} Bewertungen
+				</div>(${item.cntReview})
+				Ø ${item.avgStar} von 5 Sternen
 
 
 				<aside>
@@ -90,7 +96,7 @@
 					<br> <a class="submit_review button" id="${item.id}">Review
 						abgeben</a>
 				</div>
-				<a class="reviews-button" id=${item.id} >Bewertungen</a>
+				<a class="reviews-button" id=${item.id} ><h3> Bewertungen anzeigen</h3></a>
 				<table id="bewertungen${item.id}" style="display: none;">
 				 <tbody>
 				 </tbody>
@@ -173,67 +179,79 @@
 			var product_id = $(this).attr('id');
 	    	  $("#bewertungen"+ product_id).empty();
 
-				var flickerAPI =  "http://localhost:8081/onlineshop-war/comments?productId="+product_id;
-					  $.getJSON( flickerAPI, function() {
+				var commentServlet =  "http://localhost:8081/onlineshop-war/comments?productId="+product_id;
+					  $.getJSON( commentServlet, function() {
 						  console.log( "success" );
 						 
 					  } )
 					    .done(function( data ) {
 					      $.each( data.items, function( i, item ) {
    	  
-					    	  var tr = '<tr>' ;
-					    	   tr += '<td><img width="50px" src="../onlineshop-war/img/user.png"/></td>';
-					    	   
-					    	   
-					    	   var star = '<div class="rate-result-cnt">';
-					    	   star += '<div class="rate-bg"';
-					    	   star += 'style="width:'+ 20 * item.stars + '%"></div>';
-					    	   star += '<div class="rate-stars"></div>';
-					    	   star += '</div>';
-					    	   
-					    	   tr += '<td>' + star +'<p>' + item.comment  +'</p></td>';
-					    	   tr += '</tr><tr>';
-					    	   tr += '<td></td>';
-					    	   tr += '<td>' + item.time + " - " + item.userId  + '</td>';
-					    	   tr += '</tr>';
-	      
-					    	
-					    	   
-					      		$( "#bewertungen"+ product_id ).append( tr);
-				console.log(tr);
+					    	  addComment(item);
+								
+
 					      });
 					    });
-				$("#bewertungen"+ product_id).toggle("fast");
+						$("#bewertungen"+ product_id).toggle("slow");
 			});
 		
 		doPoll();
-	});
+
 	
-	
-	
-	
-	
+		function addComment(item){
+			  var tr = '<tr>' ;
+	    	   tr += '<td><img width="50px" src="../onlineshop-war/img/user.png"/></td>';
+	    	   
+	    	   
+	    	   var star = '<div class="rate-result-cnt">';
+	    	   star += '<div class="rate-bg"';
+	    	   star += 'style="width:'+ 20 * item.stars + '%"></div>';
+	    	   star += '<div class="rate-stars"></div>';
+	    	   star += '</div>';
+	    	   
+	    	   tr += '<td>' + star +'<p>' + item.comment  +'</p></td>';
+	    	   tr += '</tr><tr>';
+	    	   tr += '<td></td>';
+	    	   tr += '<td>' + item.time + " - " + item.userName  + '</td>';
+	    	   tr += '</tr>';
+
+	    	
+	    	   
+	      		$( "#bewertungen"+ item.productId ).append( tr);
+	      	
+		}
+		
+	var lastid =0;
 	
 	function doPoll(){
+		var prodids = $("#loadedProducts").html();
 		
-		var prodids = '' ;
-		$('section').each(function(i, obj) {
-			console.log(obj);
-			var prodid = $(obj).attr('id');
-			
-			if (prodid ){
-					prodids = prodids + "," + prodid;
-			}
-			
-			
-		});
-			
+		
+		
 		console.log(prodids);
 		
-	       // alert("Helllo ");  // process results here
-	        setTimeout(doPoll,5000);
+		var pollingServlet =  "http://localhost:8081/onlineshop-war/polling?productids="+prodids +"&lastId="+lastid;
+		  $.getJSON( pollingServlet, function() {
+			  console.log( "success" );
+			 
+		  } ).done(function( data ) {
+		      $.each( data.items, function( i, item ) {
+		     
+		    	  if (lastid != 0){
+		    	  
+		    		  addComment(item);
+		    	  }
+		    	  if (item.id > lastid){
+		    		  lastid = item.id;
+		    	  }
+		    	  $("#bewertungen"+ item.productId).show("slow");
+		    	  
+		      });
+		    	
+		  	});
+	        setTimeout(doPoll,3000);
 	}
-
+	});
 	
 
 </script>

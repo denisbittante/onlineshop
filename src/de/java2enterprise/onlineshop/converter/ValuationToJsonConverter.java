@@ -24,20 +24,24 @@ public class ValuationToJsonConverter {
 			buffer.append(jsonLabel("stars"));
 			buffer.append(valuation.getStars());
 			buffer.append(",\n");
-			
-			
+
 			Date timeSubmitted = valuation.getTimeSubmitted();
 			SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
 			String formatedTime = dt1.format(timeSubmitted);
-			
+
 			buffer.append(jsonLabel("time"));
 			buffer.append("\"" + formatedTime + "\"");
 			buffer.append(",\n");
 			buffer.append(jsonLabel("comment"));
-			buffer.append("\"" + valuation.getValuationcomment() + "\"");
+			String valuationcomment = valuation.getValuationcomment();
+			if (valuationcomment != null) {
+				buffer.append("\"" + valuationcomment.replaceAll("\n", "<br>") + "\"");
+			} else {
+				buffer.append("\"\"");
+			}
 			buffer.append(",\n");
 			buffer.append(jsonLabel("userName"));
-			buffer.append("\"" +valuation.getUserEmail() + "\"");
+			buffer.append("\"" + valuation.getUserEmail() + "\"");
 
 			buffer.append(valList.size() == i + 1 ? "}" : "},");
 		}

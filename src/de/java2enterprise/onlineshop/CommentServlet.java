@@ -53,7 +53,8 @@ public class CommentServlet extends HttpServlet {
 	public List<Valuation> find(Long productId) throws Exception {
 		Connection con = ((DataSource) InitialContext.doLookup("jdbc/jndiOnlineshop")).getConnection();
 		PreparedStatement stmt = con.prepareStatement(
-				"select id, time_submitted, stars, product_id, user_id, valuationcomment from  onlineshop.valuation where product_id =? and valuationcomment is not null and stars >  0");
+				"select val.*, (cust.email) as email from  onlineshop.valuation val join onlineshop.customer cust on val.user_id = cust.id  "
+				+ "where val.product_id =? and (length(val.valuationcomment)>0 or val.stars >  0) order by val.TIME_SUBMITTED");
 
 		stmt.setLong(1, productId);
 		ResultSet rs = stmt.executeQuery();
@@ -79,7 +80,7 @@ public class CommentServlet extends HttpServlet {
 				item.setValuationcomment(comment);
 			}
 			item.setProductId(Long.valueOf(rs.getLong("product_id")));
-
+			item.setUserEmail(rs.getString("email"));
 			item.setUserId(Long.valueOf(rs.getLong("user_id")));
 
 			items.add(item);

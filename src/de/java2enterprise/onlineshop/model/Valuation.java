@@ -20,7 +20,18 @@ public class Valuation implements Serializable {
 
 	private Long userId;
 
+	private String userEmail;
+	
 	private String valuationcomment;
+
+
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
 
 	public Valuation() {
 	}
