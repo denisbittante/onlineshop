@@ -64,7 +64,7 @@
 						style="width:<c:out value=" ${20 * item.avgStar}"/>%"> </div> 
 					<div class="rate-stars"></div>
 				</div>(${item.cntReview})
-				Ø ${item.avgStar} von 5 Sternen
+				&Oslash; ${item.avgStar} von 5 Sternen
 
 
 				<aside>
@@ -78,7 +78,7 @@
 
 				<div id="review${item.id}">
 					<hr width="80%">
-					<h3>Eine neue Produktbewertung hinzufügen</h3>
+					<h3>Eine neue Produktbewertung hinzufÃ¼gen</h3>
 
 					<p>Gesamtbewertung</p>
 					<div class="rate-ex2-cnt">
@@ -154,13 +154,13 @@
 									+ '&rate=' + rate + '&comment=' + comment; //
 							$.ajax({
 										type : "POST",
-										url : "http://localhost:8081/onlineshop-war/review",
+										url : "/onlineshop-war/review",
 										data : dataRate,
 										success : function() {
 											$('#review' + product_id).hide()
 											$('#log' + product_id)
 													.html(
-															'<div class="info"> Vielen Dank für Ihre Bewertung</div>')
+															'<div class="info"> Vielen Dank fÃ¼r Ihre Bewertung</div>')
 										},
 										error : function() {
 											$('#review' + product_id).hide()
@@ -179,7 +179,7 @@
 			var product_id = $(this).attr('id');
 	    	  $("#bewertungen"+ product_id).empty();
 
-				var commentServlet =  "http://localhost:8081/onlineshop-war/comments?productId="+product_id;
+				var commentServlet =  "/onlineshop-war/comments?productId="+product_id;
 					  $.getJSON( commentServlet, function() {
 						  console.log( "success" );
 						 
@@ -221,7 +221,9 @@
 	      	
 		}
 		
-	var lastid =0;
+	var lastid = 0;
+	
+	//http://<%=request.getServerName() %>:<%=request.getServerPort() %>/onlineshop-war
 	
 	function doPoll(){
 		var prodids = $("#loadedProducts").html();
@@ -230,26 +232,39 @@
 		
 		console.log(prodids);
 		
-		var pollingServlet =  "http://localhost:8081/onlineshop-war/polling?productids="+prodids +"&lastId="+lastid;
-		  $.getJSON( pollingServlet, function() {
-			  console.log( "success" );
-			 
-		  } ).done(function( data ) {
-		      $.each( data.items, function( i, item ) {
-		     
-		    	  if (lastid != 0){
+		var pollingServlet =  "/onlineshop-war/polling?productids="+prodids +"&lastId="+lastid;
+		$.getJSON( pollingServlet, function() {
+			console.log( "success" ); 
+		} ).done(function( data ) {
+	    	
+			//Erst alle lÃ¶schen 
+			if (lastid != 0){
+				$.each( data.items, function( i, item ) {
+					$("#bewertungen"+  item.productId).empty();
+			    });
+			}
+			
+			
+			$("#bewertungen"+ product_id).empty();
+
+			// Anzeigen der Bewertungen die neu hinzugekommen sind.
+			if (lastid != 0){
+				$.each( data.items, function( i, item ) {
+					addComment(item);
+			    	$("#bewertungen"+ item.productId).show("slow");
+			    });
+			}
+			// HÃ¶chste Id finden
+			$.each( data.items, function( i, item ) {
+				if (item.id > lastid){
+		    		lastid = item.id;
+		    	}
 		    	  
-		    		  addComment(item);
-		    	  }
-		    	  if (item.id > lastid){
-		    		  lastid = item.id;
-		    	  }
-		    	  $("#bewertungen"+ item.productId).show("slow");
-		    	  
-		      });
-		    	
-		  	});
-	        setTimeout(doPoll,3000);
+		    });
+
+	  	});
+	       // 3 Sekunden warten bis zum nï¿½chsten Polling
+				setTimeout(doPoll,3000);
 	}
 	});
 	
